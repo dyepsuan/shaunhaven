@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Holiday";
+  src: url("/fonts/HolidayFree.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --teal: #0f3d3e;
   --teal-dark: #062727;
@@ -66,12 +74,20 @@ select {
   color: var(--warm-white);
 }
 
-.brand svg {
-  color: #d8a94d;
+.brandLogo {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.footerLogo {
+  width: 50px;
+  height: 50px;
 }
 
 .brand span {
-  font-family: var(--font-display), serif;
+  font-family: "Holiday", var(--font-display), serif;
   font-size: 1.75rem;
   line-height: 0.85;
 }
@@ -188,13 +204,15 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(4rem, 8vw, 7.2rem);
-  letter-spacing: -0.06em;
+  font-size: clamp(3rem, 6.2vw, 5.8rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
 }
 
 h2 {
-  font-size: clamp(2.4rem, 4.5vw, 4.8rem);
-  letter-spacing: -0.05em;
+  font-size: clamp(2rem, 3.4vw, 3.8rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
 }
 
 h3 {

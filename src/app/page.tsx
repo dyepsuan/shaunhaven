@@ -3,7 +3,6 @@ import {
   CalendarDays,
   ChevronDown,
   Menu,
-  TreePalm,
   Users,
   Home,
   Waves,
@@ -201,13 +200,20 @@ function Header() {
   return (
     <header className="header">
       <div className="pageShell nav">
-        <a href="#" className="brand">
-          <TreePalm size={30} />
-          <span>
-            ShaunHaven
-            <small>Villa</small>
-          </span>
-        </a>
+      <a href="#" className="brand">
+        <Image
+          src="/images/logo.png"
+          alt="ShaunHaven logo"
+          width={46}
+          height={46}
+          className="brandLogo"
+          priority
+        />
+        <span>
+          ShaunHaven
+          <small>Exclusive Escape</small>
+        </span>
+      </a>
 
         <nav className="desktopNav">
           <a href="#booking">Book</a>
@@ -319,14 +325,21 @@ function Footer() {
     <footer id="contact" className="footer">
       <div className="footerInner pageShell">
         <div>
-          <a href="#" className="brand footerBrand">
-            <TreePalm size={28} />
+          <a href="#" className="brand">
+            <Image
+              src="/images/logo.png"
+              alt="ShaunHaven logo"
+              width={46}
+              height={46}
+              className="brandLogo"
+              priority
+            />
             <span>
               ShaunHaven
-              <small>Villa</small>
+              <small>Exclusive Escape</small>
             </span>
           </a>
-          <p>Your private seaside escape in Leyte. Where comfort meets nature.</p>
+          <p>Indulge in relaxation with a stunning sunset view in this exclusive hilltop sanctuary by the bay between the boundary of San Miguel and Barugo, Leyte.</p>
         </div>
 
         <div>
