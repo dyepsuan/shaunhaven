@@ -175,63 +175,67 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="directions" className="directions pageShell">
-        <div className="directionsText">
-          <p className="eyebrow clay">How to get there</p>
-          <h2>Find your way to ShaunHaven.</h2>
-          <p>
-            ShaunHaven Exclusive Escape is tucked along the peaceful bay area between
-            San Miguel and Barugo, Leyte. Use the map below to plan your route before
-            your stay.
-          </p>
+      <section id="directions" className="directionsBand">
+        <div className="directions pageShell">
+          <div className="directionsText">
+            <p className="eyebrow clay">How to get there</p>
+            <h2>Find your way to ShaunHaven.</h2>
+            <p>
+              ShaunHaven Exclusive Escape is tucked along the peaceful bay area between
+              San Miguel and Barugo, Leyte. Use the map below to plan your route before
+              your stay.
+            </p>
 
-          <div className="directionDetails">
-            <div>
-              <MapPin size={20} />
-              <span>ShaunHaven Exclusive Escape</span>
+            <div className="directionDetails">
+              <div>
+                <MapPin size={20} />
+                <span>ShaunHaven Exclusive Escape</span>
+              </div>
+              <div>
+                <MapPin size={20} />
+                <span>Boundary of San Miguel and Barugo, Leyte</span>
+              </div>
             </div>
-            <div>
-              <MapPin size={20} />
-              <span>Boundary of San Miguel and Barugo, Leyte</span>
-            </div>
+
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=ShaunHaven%20Exclusive%20Escape"
+              target="_blank"
+              rel="noreferrer"
+              className="ghostButton"
+            >
+              Open in Google Maps
+              <ArrowRight size={18} />
+            </a>
           </div>
 
-          <a
-            href="https://www.google.com/maps/search/?api=1&query=ShaunHaven%20Exclusive%20Escape"
-            target="_blank"
-            rel="noreferrer"
-            className="ghostButton"
-          >
-            Open in Google Maps
-            <ArrowRight size={18} />
-          </a>
-        </div>
-
-        <div className="mapCard">
-          <iframe
-            title="ShaunHaven Exclusive Escape location map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125192.13161036024!2d124.78273356596115!3d11.3161279042098!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3308131929499d0d%3A0xa048d5a9d902b2d7!2sShaunHaven%20Exclusive%20Escape!5e0!3m2!1sen!2sph!4v1781644179188!5m2!1sen!2sph"
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+          <div className="mapCard">
+            <iframe
+              title="ShaunHaven Exclusive Escape location map"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125192.13161036024!2d124.78273356596115!3d11.3161279042098!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3308131929499d0d%3A0xa048d5a9d902b2d7!2sShaunHaven%20Exclusive%20Escape!5e0!3m2!1sen!2sph!4v1781644179188!5m2!1sen!2sph"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
         </div>
       </section>
 
-      <section className="finalCta pageShell">
-        <div>
-          <p className="eyebrow clay">Your private escape awaits</p>
-          <h2>Book Direct & Save</h2>
-          <p>
-            Book directly with us for the best rates, faster assistance, and
-            personalized service.
-          </p>
-        </div>
+      <section className="finalCtaSection">
+        <div className="finalCta pageShell">
+          <div>
+            <p className="eyebrow clay">Your private escape awaits</p>
+            <h2>Book Direct & Save</h2>
+            <p>
+              Book directly with us for the best rates, faster assistance, and
+              personalized service.
+            </p>
+          </div>
 
-        <a href="#booking" className="primaryButton">
-          Book direct & save
-          <ArrowRight size={18} />
-        </a>
+          <a href="#booking" className="primaryButton">
+            Book direct & save
+            <ArrowRight size={18} />
+          </a>
+        </div>
       </section>
 
       <Footer />

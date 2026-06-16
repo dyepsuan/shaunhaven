@@ -519,8 +519,12 @@ h3 {
   object-fit: cover;
 }
 
+.directionsBand {
+  padding: 78px 0;
+  background: #0f3d3e;
+}
+
 .directions {
-  padding: 0 0 78px;
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   gap: 36px;
@@ -583,8 +587,12 @@ h3 {
   filter: saturate(0.9) contrast(1.02);
 }
 
+.finalCtaSection {
+  padding: 74px 0;
+  background: var(--warm-white);
+}
+
 .finalCta {
-  margin-bottom: 80px;
   padding: 48px;
   display: flex;
   justify-content: space-between;
@@ -713,9 +721,12 @@ h3 {
     min-height: 230px;
   }
 
-    .directions {
+  .directionsBand {
+    padding: 64px 0;
+  }
+
+  .directions {
     grid-template-columns: 1fr;
-    padding-bottom: 64px;
   }
 
   .mapCard {
@@ -790,6 +801,10 @@ h3 {
   .primaryButton,
   .bookingButton {
     width: 100%;
+  }
+
+  .directionsBand {
+    padding: 52px 0;
   }
 
   .directionsText {
