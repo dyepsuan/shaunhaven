@@ -175,6 +175,49 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section id="directions" className="directions pageShell">
+        <div className="directionsText">
+          <p className="eyebrow clay">How to get there</p>
+          <h2>Find your way to ShaunHaven.</h2>
+          <p>
+            ShaunHaven Exclusive Escape is tucked along the peaceful bay area between
+            San Miguel and Barugo, Leyte. Use the map below to plan your route before
+            your stay.
+          </p>
+
+          <div className="directionDetails">
+            <div>
+              <MapPin size={20} />
+              <span>ShaunHaven Exclusive Escape</span>
+            </div>
+            <div>
+              <MapPin size={20} />
+              <span>Boundary of San Miguel and Barugo, Leyte</span>
+            </div>
+          </div>
+
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=ShaunHaven%20Exclusive%20Escape"
+            target="_blank"
+            rel="noreferrer"
+            className="ghostButton"
+          >
+            Open in Google Maps
+            <ArrowRight size={18} />
+          </a>
+        </div>
+
+        <div className="mapCard">
+          <iframe
+            title="ShaunHaven Exclusive Escape location map"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125192.13161036024!2d124.78273356596115!3d11.3161279042098!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3308131929499d0d%3A0xa048d5a9d902b2d7!2sShaunHaven%20Exclusive%20Escape!5e0!3m2!1sen!2sph!4v1781644179188!5m2!1sen!2sph"
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+      </section>
+
       <section className="finalCta pageShell">
         <div>
           <p className="eyebrow clay">Your private escape awaits</p>
@@ -220,6 +263,7 @@ function Header() {
           <a href="#stays">The Villa</a>
           <a href="#stays">Luxe Dome</a>
           <a href="#gallery">Gallery</a>
+          <a href="#directions">Directions</a>
           <a href="#contact">Contact</a>
         </nav>
 
@@ -344,7 +388,7 @@ function Footer() {
 
         <div>
           <h4>Contact Us</h4>
-          <p><MapPin size={16} /> Leyte, Philippines</p>
+          <p><MapPin size={16} /> Brgy. Mawodpawod, San Miguel, Philippines</p>
           <p><Mail size={16} /> hello@shaunhavenvilla.com</p>
           <p><Phone size={16} /> +63 912 345 6789</p>
         </div>
