@@ -330,19 +330,44 @@ h3 {
 
 .stayCard {
   position: relative;
-  min-height: 360px;
-  overflow: hidden;
+  min-height: 390px;
   border-radius: var(--radius-md);
-  background: var(--teal);
-  box-shadow: 0 18px 40px rgba(6, 39, 39, 0.16);
+  perspective: 1200px;
 }
 
-.stayCard img {
+.flipCard {
+  background: transparent;
+}
+
+.stayCardInner {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-style: preserve-3d;
+  transition: transform 0.72s cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+.stayCard.isFlipped .stayCardInner {
+  transform: rotateY(180deg);
+}
+
+.stayCardFace {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background: var(--teal);
+  box-shadow: 0 18px 40px rgba(6, 39, 39, 0.16);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.stayCardFront img {
   object-fit: cover;
   transition: transform 0.5s ease;
 }
 
-.stayCard:hover img {
+.stayCard:not(.isFlipped):hover .stayCardFront img {
   transform: scale(1.05);
 }
 
@@ -359,7 +384,8 @@ h3 {
   color: var(--warm-white);
 }
 
-.stayCardContent p {
+.stayCardContent p,
+.amenitiesContent p {
   margin: 0 0 8px;
   color: #e4b965;
   font-size: 0.72rem;
@@ -368,7 +394,8 @@ h3 {
   text-transform: uppercase;
 }
 
-.stayCardContent h3 {
+.stayCardContent h3,
+.amenitiesContent h3 {
   margin-bottom: 10px;
 }
 
@@ -379,7 +406,8 @@ h3 {
   line-height: 1.6;
 }
 
-.stayCardContent button {
+.stayCardContent button,
+.amenitiesContent button {
   position: absolute;
   right: 24px;
   bottom: 24px;
@@ -391,6 +419,84 @@ h3 {
   border-radius: 50%;
   color: var(--warm-white);
   background: rgba(15, 61, 62, 0.5);
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.stayCardContent button:hover,
+.amenitiesContent button:hover {
+  transform: translateX(3px);
+  background: rgba(200, 112, 61, 0.82);
+  border-color: rgba(251, 248, 242, 0.9);
+}
+
+.stayCardContent button:focus-visible,
+.amenitiesContent button:focus-visible {
+  outline: 3px solid #e4b965;
+  outline-offset: 4px;
+}
+
+.stayCardBack {
+  transform: rotateY(180deg);
+  color: var(--warm-white);
+  background:
+    radial-gradient(circle at top left, rgba(228, 185, 101, 0.22), transparent 34%),
+    linear-gradient(145deg, rgba(15, 61, 62, 0.98), rgba(6, 39, 39, 0.98));
+}
+
+.amenitiesContent {
+  position: relative;
+  height: 100%;
+  padding: 28px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(228, 185, 101, 0.7) rgba(251, 248, 242, 0.12);
+}
+
+.amenitiesLabel {
+  display: inline-flex;
+  margin: 2px 0 18px;
+  padding: 8px 12px;
+  border: 1px solid rgba(228, 185, 101, 0.38);
+  border-radius: 999px;
+  color: #e4b965;
+  background: rgba(251, 248, 242, 0.08);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.amenitiesList {
+  list-style: none;
+  padding: 0 58px 8px 0;
+  margin: 0;
+  display: grid;
+  gap: 9px;
+}
+
+.amenitiesList li {
+  position: relative;
+  padding-left: 23px;
+  color: rgba(251, 248, 242, 0.88);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.amenitiesList li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #e4b965;
+  font-weight: 900;
+}
+
+.amenitiesContent button svg {
+  transform: rotate(180deg);
 }
 
 .features {
@@ -782,7 +888,15 @@ h3 {
   }
 
   .stayCard {
-    min-height: 330px;
+    min-height: 480px;
+  }
+
+  .amenitiesContent {
+    padding: 24px;
+  }
+
+  .amenitiesList {
+    padding-right: 46px;
   }
 
   .momentIcons {

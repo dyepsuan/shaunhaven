@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import {
   CalendarDays,
   ChevronDown,
@@ -21,6 +24,55 @@ const galleryImages = [
   "/images/villa-night.jpg",
   "/images/pool-lounge.jpg",
   "/images/villa-pool-top.jpg",
+];
+
+
+const stayOptions = [
+  {
+    image: "/images/aerial-villa.jpg",
+    eyebrow: "Poolside luxury",
+    title: "Private Pool Villa",
+    text: "Good for private stays, intimate gatherings, and peaceful seaside mornings.",
+    amenities: [
+      "Fully air-conditioned loft villa",
+      "Infinity pool",
+      "2 king-sized beds, 2 double-size beds",
+      "Indoor and outdoor dining",
+      "Outdoor shower",
+      "Hot and cold shower",
+      "Hygiene kit and towels",
+      "Smart TV",
+      "Karaoke",
+      "Starlink internet",
+      "Full kitchen",
+      "Grilling station",
+      "Bonfire",
+      "Sunset viewing deck",
+      "Hammock and swing",
+      "Camping ground",
+      "Pavilion",
+    ],
+  },
+  {
+    image: "/images/dome-wide.jpg",
+    eyebrow: "Nature glamping",
+    title: "Luxe Dome Glamping",
+    text: "A cozy dome stay surrounded by tropical greenery and modern comforts.",
+    amenities: [
+      "Good for 8 pax",
+      "2 Queen Beds, 2 double beds",
+      "Air-conditioned dome tent",
+      "Jacuzzi-type pool",
+      "Toilet and bath",
+      "Full kitchen with ref",
+      "Starlink internet",
+      "Smart TV",
+      "Dining area and bonfire area",
+      "Lounging deck",
+      "Grilling station",
+      "Portable speaker with mic",
+    ],
+  },
 ];
 
 export default function HomePage() {
@@ -90,7 +142,7 @@ export default function HomePage() {
 
       <HorizonLine />
 
-      <section className="staySection pageShell">
+      <section id="stays" className="staySection pageShell">
         <div className="sectionIntro">
           <p className="eyebrow clay">Stay your way</p>
           <h2>Two Unique Stays. One Unforgettable View.</h2>
@@ -101,19 +153,9 @@ export default function HomePage() {
         </div>
 
         <div className="stayGrid">
-          <StayCard
-            image="/images/aerial-villa.jpg"
-            eyebrow="Poolside luxury"
-            title="Private Pool Villa"
-            text="Good for private stays, intimate gatherings, and peaceful seaside mornings."
-          />
-
-          <StayCard
-            image="/images/dome-wide.jpg"
-            eyebrow="Nature glamping"
-            title="Luxe Dome Glamping"
-            text="A cozy dome stay surrounded by tropical greenery and modern comforts."
-          />
+          {stayOptions.map((stay) => (
+            <StayCard key={stay.title} {...stay} />
+          ))}
         </div>
       </section>
 
@@ -309,23 +351,57 @@ function StayCard({
   eyebrow,
   title,
   text,
+  amenities,
 }: {
   image: string;
   eyebrow: string;
   title: string;
   text: string;
+  amenities: string[];
 }) {
+  const [isFlipped, setIsFlipped] = useState(false);
+
   return (
-    <article className="stayCard">
-      <Image src={image} alt={title} fill />
-      <div className="stayCardOverlay" />
-      <div className="stayCardContent">
-        <p>{eyebrow}</p>
-        <h3>{title}</h3>
-        <span>{text}</span>
-        <button aria-label={`View ${title}`}>
-          <ArrowRight size={20} />
-        </button>
+    <article className={`stayCard flipCard ${isFlipped ? "isFlipped" : ""}`}>
+      <div className="stayCardInner">
+        <div className="stayCardFace stayCardFront">
+          <Image src={image} alt={title} fill />
+          <div className="stayCardOverlay" />
+          <div className="stayCardContent">
+            <p>{eyebrow}</p>
+            <h3>{title}</h3>
+            <span>{text}</span>
+            <button
+              type="button"
+              aria-label={`View ${title} amenities`}
+              onClick={() => setIsFlipped(true)}
+            >
+              <ArrowRight size={20} />
+            </button>
+          </div>
+        </div>
+
+        <div className="stayCardFace stayCardBack">
+          <div className="amenitiesContent">
+            <p>{eyebrow}</p>
+            <h3>{title}</h3>
+            <span className="amenitiesLabel">Amenities</span>
+
+            <ul className="amenitiesList">
+              {amenities.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+
+            <button
+              type="button"
+              aria-label={`Back to ${title}`}
+              onClick={() => setIsFlipped(false)}
+            >
+              <ArrowRight size={20} />
+            </button>
+          </div>
+        </div>
       </div>
     </article>
   );
