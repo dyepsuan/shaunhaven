@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import type { FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CalendarDays,
   ChevronDown,
   Menu,
+  X,
   Users,
   Home,
   Waves,
@@ -19,6 +21,15 @@ import {
   Phone,
 } from "lucide-react";
 
+const navLinks = [
+  { href: "#booking", label: "Book" },
+  { href: "#villa", label: "The Villa" },
+  { href: "#dome", label: "Luxe Dome" },
+  { href: "#gallery", label: "Gallery" },
+  { href: "#directions", label: "Directions" },
+  { href: "#contact", label: "Contact" },
+];
+
 const galleryImages = [
   "/images/dome-pool.jpg",
   "/images/villa-night.jpg",
@@ -29,6 +40,7 @@ const galleryImages = [
 
 const stayOptions = [
   {
+    id: "villa",
     image: "/images/aerial-villa.jpg",
     eyebrow: "Poolside luxury",
     title: "Private Pool Villa",
@@ -54,6 +66,7 @@ const stayOptions = [
     ],
   },
   {
+    id: "dome",
     image: "/images/dome-wide.jpg",
     eyebrow: "Nature glamping",
     title: "Luxe Dome Glamping",
@@ -75,9 +88,16 @@ const stayOptions = [
   },
 ];
 
+type BookingInquiry = {
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+  property: string;
+};
+
 export default function HomePage() {
   return (
-    <main>
+    <main id="top">
       <Header />
 
       <section className="hero">
@@ -109,35 +129,7 @@ export default function HomePage() {
       </section>
 
       <section id="booking" className="bookingWrap pageShell">
-        <div className="bookingCard">
-          <BookingItem
-            icon={<CalendarDays size={22} />}
-            label="Check-in"
-            value="May 24, 2025"
-          />
-          <BookingItem
-            icon={<CalendarDays size={22} />}
-            label="Check-out"
-            value="May 25, 2025"
-          />
-          <BookingItem icon={<Users size={22} />} label="Guests" value="2 Adults" />
-          <BookingItem
-            icon={<Home size={22} />}
-            label="Property"
-            value="Pool Villa"
-            hasDropdown
-          />
-
-          <button className="bookingButton">
-            Check availability
-            <ArrowRight size={20} />
-          </button>
-
-          <div className="bookingFooter">
-            <span>Best Rate Guarantee</span>
-            <span>Instant confirmation</span>
-          </div>
-        </div>
+        <BookingForm />
       </section>
 
       <HorizonLine />
@@ -195,7 +187,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="gallery pageShell">
+      <section id="gallery" className="gallery pageShell">
         <div className="galleryHeader">
           <div>
             <p className="eyebrow clay">Gallery</p>
@@ -242,7 +234,7 @@ export default function HomePage() {
             <a
               href="https://www.google.com/maps/search/?api=1&query=ShaunHaven%20Exclusive%20Escape"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="ghostButton"
             >
               Open in Google Maps
@@ -286,73 +278,322 @@ export default function HomePage() {
 }
 
 function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isMenuOpen]);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
     <header className="header">
       <div className="pageShell nav">
-      <a href="#" className="brand">
-        <Image
-          src="/images/logo.png"
-          alt="ShaunHaven logo"
-          width={46}
-          height={46}
-          className="brandLogo"
-          priority
-        />
-        <span>
-          ShaunHaven
-          <small>Exclusive Escape</small>
-        </span>
-      </a>
+        <a href="#top" className="brand" onClick={closeMenu}>
+          <Image
+            src="/images/logo.png"
+            alt="ShaunHaven logo"
+            width={46}
+            height={46}
+            className="brandLogo"
+            priority
+          />
+          <span>
+            ShaunHaven
+            <small>Exclusive Escape</small>
+          </span>
+        </a>
 
         <nav className="desktopNav">
-          <a href="#booking">Book</a>
-          <a href="#stays">The Villa</a>
-          <a href="#stays">Luxe Dome</a>
-          <a href="#gallery">Gallery</a>
-          <a href="#directions">Directions</a>
-          <a href="#contact">Contact</a>
+          {navLinks.map((link) => (
+            <a key={link.label} href={link.href}>
+              {link.label}
+            </a>
+          ))}
         </nav>
 
         <a href="#booking" className="navButton">Book Now</a>
 
-        <button className="menuButton" aria-label="Open menu">
-          <Menu />
+        <button
+          className="menuButton"
+          type="button"
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-controls="mobile-menu"
+          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen((current) => !current)}
+        >
+          {isMenuOpen ? <X /> : <Menu />}
         </button>
       </div>
+
+      <nav
+        id="mobile-menu"
+        className={`mobileMenu ${isMenuOpen ? "isOpen" : ""}`}
+        aria-label="Mobile navigation"
+      >
+        {navLinks.map((link) => (
+          <a key={link.label} href={link.href} onClick={closeMenu}>
+            {link.label}
+          </a>
+        ))}
+        <a href="#booking" className="mobileBookButton" onClick={closeMenu}>
+          Book Now
+        </a>
+      </nav>
     </header>
   );
 }
 
-function BookingItem({
+function BookingForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [confirmedInquiry, setConfirmedInquiry] =
+    useState<BookingInquiry | null>(null);
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const inquiry = {
+      checkIn: String(formData.get("checkIn") ?? ""),
+      checkOut: String(formData.get("checkOut") ?? ""),
+      guests: String(formData.get("guests") ?? ""),
+      property: String(formData.get("property") ?? ""),
+    };
+
+    if (new Date(inquiry.checkOut) <= new Date(inquiry.checkIn)) {
+      setError("Check-out must be after check-in.");
+      return;
+    }
+
+    setError("");
+    setIsSubmitting(true);
+    timeoutRef.current = window.setTimeout(() => {
+      setIsSubmitting(false);
+      setConfirmedInquiry(inquiry);
+    }, 450);
+  };
+
+  return (
+    <>
+      <form
+        className="bookingCard"
+        onSubmit={handleSubmit}
+        onChange={() => error && setError("")}
+      >
+        <BookingField icon={<CalendarDays size={22} />} label="Check-in">
+          <input type="date" name="checkIn" required aria-label="Check-in date" />
+        </BookingField>
+        <BookingField icon={<CalendarDays size={22} />} label="Check-out">
+          <input type="date" name="checkOut" required aria-label="Check-out date" />
+        </BookingField>
+        <BookingField icon={<Users size={22} />} label="Guests">
+          <input
+            type="number"
+            name="guests"
+            min="1"
+            max="30"
+            defaultValue="2"
+            required
+            aria-label="Number of guests"
+          />
+        </BookingField>
+        <BookingField
+          icon={<Home size={22} />}
+          label="Property"
+          hasDropdown
+        >
+          <select name="property" defaultValue="Pool Villa" required aria-label="Property">
+            <option value="Pool Villa">Pool Villa</option>
+            <option value="Luxe Dome">Luxe Dome</option>
+            <option value="Both stays">Both stays</option>
+          </select>
+        </BookingField>
+
+        <button className="bookingButton" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Checking..." : "Check availability"}
+          <ArrowRight size={20} aria-hidden="true" />
+        </button>
+
+        <div className="bookingFooter">
+          <span>Best Rate Guarantee</span>
+          <span>Instant confirmation</span>
+        </div>
+        {error && (
+          <p className="bookingError" role="alert">
+            {error}
+          </p>
+        )}
+      </form>
+
+      <BookingModal
+        inquiry={confirmedInquiry}
+        onClose={() => setConfirmedInquiry(null)}
+      />
+    </>
+  );
+}
+
+function BookingField({
   icon,
   label,
-  value,
+  children,
   hasDropdown,
 }: {
   icon: React.ReactNode;
   label: string;
-  value: string;
+  children: React.ReactNode;
   hasDropdown?: boolean;
 }) {
   return (
-    <div className="bookingItem">
+    <label className="bookingItem">
       <div className="bookingIcon">{icon}</div>
-      <div>
+      <div className="bookingControl">
         <span>{label}</span>
-        <strong>{value}</strong>
+        {children}
       </div>
-      {hasDropdown && <ChevronDown size={18} />}
+      {hasDropdown && <ChevronDown size={18} aria-hidden="true" />}
+    </label>
+  );
+}
+
+function BookingModal({
+  inquiry,
+  onClose,
+}: {
+  inquiry: BookingInquiry | null;
+  onClose: () => void;
+}) {
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const emailHref = useMemo(() => {
+    if (!inquiry) {
+      return "mailto:hello@shaunhavenvilla.com";
+    }
+
+    const body = [
+      "Hi ShaunHaven,",
+      "",
+      "I would like to check availability for:",
+      `Property: ${inquiry.property}`,
+      `Check-in: ${inquiry.checkIn}`,
+      `Check-out: ${inquiry.checkOut}`,
+      `Guests: ${inquiry.guests}`,
+      "",
+      "Please let me know the available rates and next steps.",
+    ].join("\n");
+
+    return `mailto:hello@shaunhavenvilla.com?subject=${encodeURIComponent(
+      "ShaunHaven booking inquiry"
+    )}&body=${encodeURIComponent(body)}`;
+  }, [inquiry]);
+
+  useEffect(() => {
+    if (!inquiry) {
+      return;
+    }
+
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [inquiry, onClose]);
+
+  if (!inquiry) {
+    return null;
+  }
+
+  return (
+    <div className="modalOverlay" role="presentation" onMouseDown={onClose}>
+      <div
+        className="bookingModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="booking-modal-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <button
+          ref={closeButtonRef}
+          className="modalClose"
+          type="button"
+          aria-label="Close booking inquiry"
+          onClick={onClose}
+        >
+          <X size={20} />
+        </button>
+        <p className="eyebrow clay">Availability request</p>
+        <h3 id="booking-modal-title">Ready to check your dates</h3>
+        <dl className="inquirySummary">
+          <div>
+            <dt>Stay</dt>
+            <dd>{inquiry.property}</dd>
+          </div>
+          <div>
+            <dt>Dates</dt>
+            <dd>
+              {inquiry.checkIn} to {inquiry.checkOut}
+            </dd>
+          </div>
+          <div>
+            <dt>Guests</dt>
+            <dd>{inquiry.guests}</dd>
+          </div>
+        </dl>
+        <div className="modalActions">
+          <a className="primaryButton" href={emailHref}>
+            Send inquiry
+            <Mail size={18} aria-hidden="true" />
+          </a>
+          <a className="ghostButton" href="tel:+639123456789">
+            Call now
+            <Phone size={18} aria-hidden="true" />
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
 
 function StayCard({
+  id,
   image,
   eyebrow,
   title,
   text,
   amenities,
 }: {
+  id: string;
   image: string;
   eyebrow: string;
   title: string;
@@ -362,9 +603,13 @@ function StayCard({
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <article className={`stayCard flipCard ${isFlipped ? "isFlipped" : ""}`}>
+    <article
+      id={id}
+      className={`stayCard flipCard ${isFlipped ? "isFlipped" : ""}`}
+      aria-label={`${title} stay card`}
+    >
       <div className="stayCardInner">
-        <div className="stayCardFace stayCardFront">
+        <div className="stayCardFace stayCardFront" aria-hidden={isFlipped}>
           <Image src={image} alt={title} fill />
           <div className="stayCardOverlay" />
           <div className="stayCardContent">
@@ -374,6 +619,8 @@ function StayCard({
             <button
               type="button"
               aria-label={`View ${title} amenities`}
+              aria-pressed={isFlipped}
+              tabIndex={isFlipped ? -1 : 0}
               onClick={() => setIsFlipped(true)}
             >
               <ArrowRight size={20} />
@@ -381,7 +628,7 @@ function StayCard({
           </div>
         </div>
 
-        <div className="stayCardFace stayCardBack">
+        <div className="stayCardFace stayCardBack" aria-hidden={!isFlipped}>
           <div className="amenitiesContent">
             <p>{eyebrow}</p>
             <h3>{title}</h3>
@@ -396,6 +643,8 @@ function StayCard({
             <button
               type="button"
               aria-label={`Back to ${title}`}
+              aria-pressed={!isFlipped}
+              tabIndex={isFlipped ? 0 : -1}
               onClick={() => setIsFlipped(false)}
             >
               <ArrowRight size={20} />
@@ -449,7 +698,7 @@ function Footer() {
     <footer id="contact" className="footer">
       <div className="footerInner pageShell">
         <div>
-          <a href="#" className="brand">
+          <a href="#top" className="brand">
             <Image
               src="/images/logo.png"
               alt="ShaunHaven logo"
@@ -468,14 +717,31 @@ function Footer() {
 
         <div>
           <h4>Contact Us</h4>
-          <p><MapPin size={16} /> Brgy. Mawodpawod, San Miguel, Philippines</p>
-          <p><Mail size={16} /> hello@shaunhavenvilla.com</p>
-          <p><Phone size={16} /> +63 912 345 6789</p>
+          <p>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=ShaunHaven%20Exclusive%20Escape"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MapPin size={16} /> Brgy. Mawodpawod, San Miguel, Philippines
+            </a>
+          </p>
+          <p>
+            <a href="mailto:hello@shaunhavenvilla.com">
+              <Mail size={16} /> hello@shaunhavenvilla.com
+            </a>
+          </p>
+          <p>
+            <a href="tel:+639123456789">
+              <Phone size={16} /> +63 912 345 6789
+            </a>
+          </p>
         </div>
 
         <div>
           <h4>Follow Us</h4>
           <div className="socials">
+            <span aria-disabled="true">Social links coming soon</span>
           </div>
         </div>
       </div>
